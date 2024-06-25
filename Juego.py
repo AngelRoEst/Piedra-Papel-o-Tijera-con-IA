@@ -4,7 +4,21 @@ import random
 import SeguimientoManos as sm  # Clase manos
 import os
 import imutils
+#Importamos pandas para el manejo de datos para la predicción de la jugada.
+import pandas as pd
+# Importamos nuestra funcion de resultado del modelo de machine learning
+import Modelo as md
+# Sirve para guiarnos en la división del set de entrenamiento y el set de prueba
+import datetime
 
+'''
+PARA ENTENDER NUESTRO HISTORIAL DE JUGADAS AQUI ESTA UN MAPEO:
+1 = Piedra
+2 = Papel
+3 = Tijeras
+4 = Perdio el jugador
+5 = Gano el jugador
+'''
 # Declaracion de variables
 fs = False
 fu = False      # Bandera up
@@ -18,8 +32,13 @@ fder = False    # Bandera derecha
 fizq = False    # Bandera izquierda
 conteo = 0
 
+#Leemos nuestro archivo de historial de jugadas
+jugadas = pd.read_excel("DataFrameTestRPIA.xlsx")
+
+
+
 # Accedemos a la carpeta
-path = 'Imagenes'
+path = "D:/Test Project Rock Paper and AI/Piedra-Papel-o-Tijera-con-IA/Imagenes"
 images = []
 clases = []
 lista = os.listdir(path)
@@ -139,7 +158,16 @@ while True:
                     # Si no hemos jugado jugamos
                     if fj == False and fr == False:
                         # Elegimos piedra papel o tijera
-                        juego = random.randint(3,5)
+                        '''
+AQUI IMPLEMENTAREMOS NUESTROS ALGORITMOS DE IA PARA ELEGIR LA JUGADA
+                        '''
+                        juegoHumano = md.prediccionMovimiento(jugadas["JugadasHumano"].tail(1).values[0], jugadas["JugadasIA"].tail(1).values[0], jugadas["Estado"].tail(1).values[0])
+                        if juegoHumano == 1:
+                            juego = 3
+                        elif juegoHumano == 2:
+                            juego = 5
+                        elif juegoHumano == 3:
+                            juego = 4
                         fj = True
 
                     # Izquierda
@@ -181,7 +209,12 @@ while True:
                                     fgia = True
                                     fgus = False
                                     femp = False
-                                    fr = True
+                                    fr = True    
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": ["piedra"],
+                                        "JugadasIA" : ["papel"],
+                                    })
                                 # IA PIEDRA
                                 elif juego == 4:
                                     # EMPATE
@@ -191,7 +224,12 @@ while True:
                                     fgus = False
                                     femp = True
                                     fr = True
-
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": ["piedra"],
+                                        "JugadasIA" : ["piedra"],
+                                    })
+                                #IA Tijeras
                                 elif juego == 5:
                                     # GANA USUARIO
                                     print('GANA EL HUMANO')
@@ -200,6 +238,11 @@ while True:
                                     fgus = True
                                     femp = False
                                     fr = True
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": ["piedra"],
+                                        "JugadasIA" : ["tijeras"],
+                                    })
 
 
                             # Papel
@@ -212,6 +255,11 @@ while True:
                                     fgus = False
                                     fr = True
                                     femp = True
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": ["papel"],
+                                        "JugadasIA" : ["papel"],
+                                    })
                                 # IA PIEDRA
                                 elif juego == 4:
                                     # GANA USUARIO
@@ -221,15 +269,24 @@ while True:
                                     fgus = True
                                     femp = False
                                     fr = True
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": ["papel"],
+                                        "JugadasIA" : ["piedra"],
+                                    })
                                 elif juego == 5:
                                     # GANA LA IA
                                     print('GANA LA IA')
                                     # Bandera Ganador
                                     fgia = True
                                     fgus = False
-                                    femp = False
+                                    femp = False    
                                     fr = True
-
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": ["papel"],
+                                        "JugadasIA" : ["tijeras"],
+                                    })
                             # Tijera
                             elif x2 > x22 and x3 > x33 and x4 < x44:
                                 # IA PAPEL
@@ -241,6 +298,11 @@ while True:
                                     fgus = True
                                     femp = False
                                     fr = True
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": ["tijeras"],
+                                        "JugadasIA" : ["papel"],
+                                    })
                                 # IA PIEDRA
                                 elif juego == 4:
                                     # GANA LA IA
@@ -250,6 +312,11 @@ while True:
                                     fgus = False
                                     femp = False
                                     fr = True
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": ["tijeras"],
+                                        "JugadasIA" : ["piedra"],
+                                    })
                                 elif juego == 5:
                                     # EMPATE
                                     print('EMPATE')
@@ -257,6 +324,11 @@ while True:
                                     fgus = False
                                     femp = True
                                     fr = True
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": ["tijeras"],
+                                        "JugadasIA" : ["tijeras"],
+                                    })
 
                         # Mostramos ganador
                         # IA
@@ -366,6 +438,16 @@ while True:
                                     fgus = False
                                     femp = False
                                     fr = True
+                                    #Guarda el tiempo actual                                    
+                                    f = datetime.datetime.now()                                    
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": [1],
+                                        "JugadasIA" : [2],
+                                        "Estado" : [4],
+                                        "tiempo": [f]
+                                    })
+                                    jugadas = pd.concat([jugadas,nuevaJugada], ignore_index=True)
                                 # IA PIEDRA
                                 elif juego == 4:
                                     # EMPATE
@@ -375,6 +457,16 @@ while True:
                                     fgus = False
                                     femp = True
                                     fr = True
+                                    #Guarda el tiempo actual
+                                    f = datetime.datetime.now()                                    
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": [1],
+                                        "JugadasIA" : [1],
+                                        "Estado" : [4],
+                                        "tiempo": [f],
+                                    })
+                                    jugadas = pd.concat([jugadas,nuevaJugada], ignore_index=True)
 
                                 elif juego == 5:
                                     # GANA USUARIO
@@ -384,7 +476,16 @@ while True:
                                     fgus = True
                                     femp = False
                                     fr = True
-
+                                    #Guarda el tiempo actual
+                                    f = datetime.datetime.now()                                    
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": [1],
+                                        "JugadasIA" : [3],
+                                        "Estado" : [5],
+                                        "tiempo": [f],
+                                    })
+                                    jugadas = pd.concat([jugadas,nuevaJugada], ignore_index=True)
 
                             # Papel
                             elif x2 < x22 and x3 < x33 and x4 < x44:
@@ -394,8 +495,19 @@ while True:
                                     print('EMPATE')
                                     fgia = False
                                     fgus = False
-                                    fr = True
+                                    fr = True¿
                                     femp = True
+                                    #Guarda el tiempo actual
+                                    f = datetime.datetime.now()                                    
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": [2],
+                                        "JugadasIA" : [2],
+                                        "Estado" : [4],
+                                        "tiempo": [f],
+                                    })
+                                    jugadas = pd.concat([jugadas,nuevaJugada], ignore_index=True)
+
                                 # IA PIEDRA
                                 elif juego == 4:
                                     # GANA USUARIO
@@ -405,6 +517,17 @@ while True:
                                     fgus = True
                                     femp = False
                                     fr = True
+                                    #Guarda el tiempo actual
+                                    f = datetime.datetime.now()                                    
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": [2],
+                                        "JugadasIA" : [1],
+                                        "Estado" : [5],
+                                        "tiempo": [f]
+                                    })
+                                    jugadas = pd.concat([jugadas,nuevaJugada], ignore_index=True)
+
                                 elif juego == 5:
                                     # GANA LA IA
                                     print('GANA LA IA')
@@ -413,6 +536,16 @@ while True:
                                     fgus = False
                                     femp = False
                                     fr = True
+                                    #Guarda el tiempo actual
+                                    f = datetime.datetime.now()                                    
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": [2],
+                                        "JugadasIA" : [3],
+                                        "Estado" : [4],
+                                        "tiempo": [f],
+                                    })
+                                    jugadas = pd.concat([jugadas,nuevaJugada], ignore_index=True)
 
                             # Tijera
                             elif x2 < x22 and x3 < x33 and x4 > x44:
@@ -425,6 +558,17 @@ while True:
                                     fgus = True
                                     femp = False
                                     fr = True
+                                    #Guarda el tiempo actual
+                                    f = datetime.datetime.now()                                    
+                                    #Almacenamos esta maravillosa jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": [3],
+                                        "JugadasIA" : [2],
+                                        "Estado" : [5],
+                                        "tiempo": [f],
+                                    })
+                                    jugadas = pd.concat([jugadas,nuevaJugada], ignore_index=True)
+
                                 # IA PIEDRA
                                 elif juego == 4:
                                     # GANA LA IA
@@ -434,6 +578,16 @@ while True:
                                     fgus = False
                                     femp = False
                                     fr = True
+                                    #Guarda el tiempo actual
+                                    f = datetime.datetime.now()                                  
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": [3],
+                                        "JugadasIA" : [1],
+                                        "Estado" : [4],
+                                        "tiempo": [f],
+                                    })
+                                    jugadas = pd.concat([jugadas,nuevaJugada], ignore_index=True)
+
                                 elif juego == 5:
                                     # EMPATE
                                     print('EMPATE')
@@ -441,7 +595,20 @@ while True:
                                     fgus = False
                                     femp = True
                                     fr = True
+                                     #Guarda el tiempo actual
+                                    f = datetime.datetime.now()                                    
+                                    #Almacenamos la jugada:
+                                    nuevaJugada= pd.DataFrame({
+                                        "JugadasHumano": [3],
+                                        "JugadasIA" : [3],
+                                        "Estado" : [4],
+                                        "tiempo": [f],
+                                    })
+                                    jugadas = pd.concat([jugadas,nuevaJugada], ignore_index=True)
 
+                                    
+                        #Almacenamos los datos en un archivo tipo excel:
+                        jugadas.to_excel("DataFrameTestRPIA.xlsx", sheet_name="testPlays", index=False)
                         # Mostramos ganador
                         # IA
                         if fgia == True:
