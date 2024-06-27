@@ -495,7 +495,7 @@ AQUI IMPLEMENTAREMOS NUESTROS ALGORITMOS DE IA PARA ELEGIR LA JUGADA
                                     print('EMPATE')
                                     fgia = False
                                     fgus = False
-                                    fr = True¿
+                                    fr = True
                                     femp = True
                                     #Guarda el tiempo actual
                                     f = datetime.datetime.now()                                    
